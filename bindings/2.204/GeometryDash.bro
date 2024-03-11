@@ -950,6 +950,8 @@ class CCMoveCNode : cocos2d::CCObject {
 
 	bool init();
 	TodoReturn reset();
+
+	PAD = win 0xAC, android32 0xAC;
 }
 
 [[link(android)]]
@@ -4985,7 +4987,7 @@ class GameObject : CCSpritePlus {
 	virtual TodoReturn getObjectRect2(float, float);
 	virtual TodoReturn getObjectTextureRect();
 	virtual cocos2d::CCPoint getRealPosition();
-	virtual void setStartPos(cocos2d::CCPoint);
+	virtual void setStartPos(cocos2d::CCPoint) = win 0x1330e0;
 	virtual TodoReturn updateStartValues();
 	virtual TodoReturn customObjectSetup(gd::vector<gd::string>&, gd::vector<void*>&);
 	virtual gd::string getSaveString(GJBaseGameLayer*) = win 0x13f9a0;
@@ -5045,7 +5047,12 @@ class GameObject : CCSpritePlus {
 
 	// property 511
 	bool m_hasExtendedCollision;
-	PAD = android32 0x13, win 0x13, android64 0x13;
+	
+	PAD = android32 0xd, win 0xd, android64 0xd;
+    
+	bool m_isDisabled;
+
+	PAD = android32 0x4, win 0x4, android64 0x4; // maybe 0x5? needs some testing tho
 
 	// somehow related to property 155 and 156 if anyone wants to reverse engineer
 	int m_activeMainColorID;
@@ -5068,6 +5075,7 @@ class GameObject : CCSpritePlus {
 
 	// property 146
 	bool m_particleUseObjectColor;
+
 	PAD = android32 0x3e, win 0x3e, android64 0x3e;
 
 	// property 108
@@ -5122,7 +5130,16 @@ class GameObject : CCSpritePlus {
 
 	// property 53
 	int m_property53;
-	PAD = android32 0x18, win 0x18, android64 0x18;
+
+	PAD = android32 0x8, win 0x8, android64 0x8;
+    // set by `GameObject::determineSlopeDirection`
+	bool m_unk3B8;
+
+	PAD = android32 0x3, win 0x3, android64 0x3;
+	// enum, set by `GameObject::determineSlopeDirection
+	int m_slopeDirection;
+	
+	PAD = android32 0x8, win 0x8, android64 0x8;
 
 	// property 21, also used with 41 and 43
 	GJSpriteColor* m_baseColor;
@@ -5741,7 +5758,7 @@ class GJActionManager : cocos2d::CCNode {
 	TodoReturn runInternalAction(cocos2d::CCAction*, cocos2d::CCNode*);
 	TodoReturn stopAllInternalActions();
 	TodoReturn stopInternalAction(int);
-	TodoReturn updateInternalActions(float, bool);
+	TodoReturn updateInternalActions(float, bool) = win 0x18d3f0;
 
 	virtual bool init();
 }
@@ -5817,7 +5834,7 @@ class GJBaseGameLayer : cocos2d::CCLayer, TriggerEffectDelegate {
 	TodoReturn clearActivatedAudioTriggers() = win 0x1c5590;
 	TodoReturn clearPickedUpItems();
 	TodoReturn collectedObject(EffectGameObject*);
-	TodoReturn collisionCheckObjects(PlayerObject*, gd::vector<GameObject*>*, int, float) = win 0x19c1b0;
+	void collisionCheckObjects(PlayerObject*, gd::vector<GameObject*>*, int, float) = win 0x19c1b0;
 	TodoReturn controlAdvancedFollowCommand(AdvancedFollowTriggerObject*, int, GJActionCommand);
 	TodoReturn controlAreaEffect(EnterEffectObject*, gd::vector<EnterEffectInstance>*, GJActionCommand);
 	TodoReturn controlAreaEffectWithID(int, int, GJActionCommand);
@@ -5956,7 +5973,7 @@ class GJBaseGameLayer : cocos2d::CCLayer, TriggerEffectDelegate {
 	TodoReturn processAreaTransformGroupAction(cocos2d::CCArray*, EnterEffectInstance*, cocos2d::CCPoint, int, int, int, int, int, bool, bool);
 	TodoReturn processAreaVisualActions(float);
 	TodoReturn processCameraObject(GameObject*, PlayerObject*);
-	TodoReturn processCommands(float);
+	TodoReturn processCommands(float) = win 0x1bd240; 
 	TodoReturn processDynamicObjectActions(int, float) = win 0x1b2740;
 	TodoReturn processFollowActions();
 	TodoReturn processItems() = win 0x19d2b0;
@@ -6067,7 +6084,7 @@ class GJBaseGameLayer : cocos2d::CCLayer, TriggerEffectDelegate {
 	TodoReturn triggerDynamicRotateCommand(EnhancedTriggerObject*);
 	TodoReturn triggerGradientCommand(GradientTriggerObject*);
 	TodoReturn triggerGravityChange(EffectGameObject*, int);
-	TodoReturn triggerMoveCommand(EffectGameObject*);
+	TodoReturn triggerMoveCommand(EffectGameObject*) = win 0x1a4890;
 	TodoReturn triggerRotateCommand(EnhancedTriggerObject*);
 	TodoReturn triggerShaderCommand(ShaderGameObject*);
 	TodoReturn triggerTransformCommand(TransformTriggerGameObject*);
@@ -6112,7 +6129,7 @@ class GJBaseGameLayer : cocos2d::CCLayer, TriggerEffectDelegate {
 	TodoReturn updateOBB2(cocos2d::CCRect);
 	TodoReturn updateParticles(float);
 	TodoReturn updatePlatformerTime() = win 0x1bcd60;
-	TodoReturn updatePlayerCollisionBlocks();
+	TodoReturn updatePlayerCollisionBlocks() = win 0x19f300;
 	TodoReturn updateProximityVolumeEffects();
 	TodoReturn updateQueuedLabels();
 	TodoReturn updateReplay();
@@ -6504,7 +6521,7 @@ class GJEffectManager : cocos2d::CCNode {
 	TodoReturn countForItem(int);
 	TodoReturn createFollowCommand(float, float, float, int, int, int, int);
 	TodoReturn createKeyframeCommand(int, cocos2d::CCArray*, GameObject*, int, int, bool, float, float, float, float, float, float, gd::vector<int> const&);
-	TodoReturn createMoveCommand(cocos2d::CCPoint, int, float, int, float, bool, bool, bool, bool, float, float, int, int);
+	TodoReturn createMoveCommand(cocos2d::CCPoint, int, float, int, float, bool, bool, bool, bool, float, float, int, int) = win 0x1dc660;
 	TodoReturn createPlayerFollowCommand(float, float, int, float, float, int, int, int);
 	TodoReturn createRotateCommand(float, float, int, int, int, float, bool, bool, bool, int, int);
 	TodoReturn createTransformCommand(double, double, double, double, bool, float, int, int, int, float, bool, bool, int, int);
@@ -6929,7 +6946,7 @@ class GJGameState {
 	PAD = win 0x18, android32 0x18, android64 0x24;
 	cocos2d::CCPoint m_unk284;
 	int m_unk288;
-	int m_unk28c;
+	float m_nextSpeedMod; // if != 0, sets the player x velocity to this in GJBaseGameLayer::update
 	bool m_unk290;
 	gd::map<std::pair<int, int>, int> m_unk298;
 	int m_unkidk;
@@ -8336,7 +8353,7 @@ class GroupCommandObject2 {
 	TodoReturn reset();
 	TodoReturn resetDelta(bool);
 	TodoReturn runFollowCommand(double, double, double);
-	TodoReturn runMoveCommand(cocos2d::CCPoint, double, int, double, bool, bool, bool, bool, double, double);
+	void runMoveCommand(cocos2d::CCPoint, double, int, double, bool, bool, bool, bool, double, double) = win 0x1d7160;
 	TodoReturn runPlayerFollowCommand(double, double, int, double, double);
 	TodoReturn runRotateCommand(double, double, int, double, bool, int);
 	TodoReturn runTransformCommand(double, int, double);
@@ -8344,6 +8361,103 @@ class GroupCommandObject2 {
 	TodoReturn stepTransformCommand(float, bool, bool);
 	TodoReturn updateAction(int, float);
 	TodoReturn updateEffectAction(float, int);
+
+	int m_uniqueID; // not related to `GameObject::m_uniqueID`
+	cocos2d::CCPoint m_offset;
+	EasingType m_easingType;
+	double m_easingRate;
+	
+	double m_moveTime;
+	double m_elapsedTime; // NOTE: m_unk1ac also counts elapsed time,
+
+	int m_targetGroupID;
+	int m_centerGroupID;
+
+	double m_curMovedOffsetX; // how much the group has moved in X
+	double m_curMovedOffsetY; // how much the group has moved in Y
+
+	double m_unk40;
+	double m_unk48;
+	double m_unk50;
+	double m_unk58;
+
+	PAD = win 0x10, android32 0x10;
+
+	bool m_unk70; // set to true when execution has finished
+	bool m_unk71; // seems to pause the command when true
+	bool m_unk72;
+	bool m_lockToPlayerX;
+	bool m_lockToPlayerY;
+	bool m_lockToCameraX;
+	bool m_lockToCameraY;
+	bool m_useModX;
+	bool m_useModY;
+
+	PAD = win 0x7, android32 0x7;
+
+	double m_curMoveX;
+	double m_curMoveY;
+
+	double m_curRotation;   // current rotation of the group
+	double m_deltaRotation; // diff of current group rotation and previous
+
+	double m_unkA0;
+	double m_unkA8;
+
+	PAD = win 0x4, android32 0x4;
+
+	double m_dstRotation;
+	int m_unkBC;
+
+	PAD = win 0x14, android32 0x14;
+
+
+	int m_commandType;
+
+	PAD = win 0x1c, android32 0x1c;
+
+	double m_dstScaleX;
+	double m_dstScaleY;
+	double m_unk100; // Possibly deltaScaleX/Y?
+	double m_unk108;
+
+	PAD = win 0x10, android32 0x10;
+
+	bool m_onlyMove;
+	bool m_unk121;
+	bool m_relativeRotation;
+
+	PAD = win 0x35, android32 0x35;
+
+	int m_unk158;
+	int m_unk15C;
+
+	double m_unk160; // m_unkPoint160.x
+	double m_unk168; // m_unkPoint160.y
+	double m_unk170;
+	double m_unk178;
+
+	PAD = win 0x10, android32 0x10;
+
+	// action ID = enum { MoveX = 1, MoveY = 2, Rotate = 3 }
+
+	int m_actionID1; // action ID 1
+	int m_actionID2; // action ID 2
+
+	double m_actionVar1; // action variable 1
+	double m_actionVar2; // action variable 2
+
+	PAD = win 0xC, android32 0xC;
+
+	gd::vector<KeyframeObject> m_keyframes;
+	
+	PAD = win 0x10, android32 0x10;
+
+	gd::vector<int> m_unk1d0;
+	
+	PAD = win 0xC, android32 0xC;
+
+	// SIZE = 0x1e8
 }
 
 [[link(android)]]
@@ -8608,6 +8722,27 @@ class KeyframeObject {
 	// KeyframeObject(KeyframeObject const&);
 
 	TodoReturn setupSpline(gd::vector<KeyframeObject*>&);
+
+	double m_duration;
+	EasingType m_easingType;
+	float m_easingRate;
+	bool m_unk10;
+
+	PAD = win 0xF, android32 0xF;
+
+	uint8_t m_spline1[105]; // TODO: define `tk::spline`
+
+	PAD = win 0x7, android32 0x7;
+
+	uint8_t m_spline2[105]; // TODO: define `tk::spline`
+
+	PAD = win 0x1b, android32 0x1b;
+
+	int m_keyframeObjectID; // the uniqueID of the keyframegameobject
+	cocos2d::CCPoint m_unk118;
+	cocos2d::CCPoint m_unk120;
+
+	PAD = win 0x28, android32 0x28;
 }
 
 [[link(android)]]
@@ -10909,10 +11044,10 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	TodoReturn buttonDown(PlayerButton);
 	TodoReturn canStickToGround();
 	TodoReturn checkSnapJumpToObject(GameObject*);
-	TodoReturn collidedWithObject(float, GameObject*, cocos2d::CCRect, bool);
+	TodoReturn collidedWithObject(float, GameObject*, cocos2d::CCRect, bool) = win 0x2cc3d0;
 	TodoReturn collidedWithObject(float, GameObject*);
-	TodoReturn collidedWithObjectInternal(float, GameObject*, cocos2d::CCRect, bool);
-	TodoReturn collidedWithSlope(float, GameObject*, bool);
+	TodoReturn collidedWithObjectInternal(float, GameObject*, cocos2d::CCRect, bool) = win 0x2cc450;
+	TodoReturn collidedWithSlope(float, GameObject*, bool) = win 0x2ca3c0;
 	TodoReturn collidedWithSlopeInternal(float, GameObject*, bool);
 	TodoReturn convertToClosestRotation(float);
 	TodoReturn copyAttributes(PlayerObject*);
@@ -11039,17 +11174,21 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	TodoReturn spiderTestJumpInternal(bool);
 	TodoReturn spiderTestJumpX(bool);
 	TodoReturn spiderTestJumpY(bool);
+<<<<<<< Updated upstream
 	void startDashing(DashRingObject*) = win 0x2cfdb0;
+=======
+	TodoReturn startDashing(DashRingObject*) = win 0x2cfdb0;
+>>>>>>> Stashed changes
 	TodoReturn stopBurstEffect();
 	TodoReturn stopDashing() = win 0x2d0940;
 	TodoReturn stopParticles();
 	void stopPlatformerJumpAnimation() = win 0x2C7B10;
 	TodoReturn stopRotation(bool, int);
 	TodoReturn stopStreak2() = win 0x2d8b20;
-	TodoReturn storeCollision(PlayerCollisionDirection, int);
+	TodoReturn storeCollision(PlayerCollisionDirection, int) = win 0x2c8110; // the order of the parameters are switched in windows!
 	TodoReturn switchedDirTo(PlayerButton) = win 0x2d1c40;
 	TodoReturn switchedToMode(GameObjectType) = win 0x2d4fd0;
-	TodoReturn testForMoving(float, GameObject*);
+	bool testForMoving(float, GameObject*) = win 0x2c9be0;
 	TodoReturn toggleBirdMode(bool, bool) = win 0x2d3d30;
 	TodoReturn toggleDartMode(bool, bool) = win 0x2d42f0;
 	TodoReturn toggleFlyMode(bool, bool) = win 0x2d3aa0;
@@ -11069,16 +11208,16 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	TodoReturn unrotatePreSlopeObjects();
 	TodoReturn updateCheckpointMode(bool);
 	TodoReturn updateCheckpointTest() = win 0x2c6310;
-	TodoReturn updateCollide(PlayerCollisionDirection, GameObject*);
-	TodoReturn updateCollideBottom(float, GameObject*);
-	TodoReturn updateCollideLeft(float, GameObject*);
-	TodoReturn updateCollideRight(float, GameObject*);
-	TodoReturn updateCollideTop(float, GameObject*);
+	TodoReturn updateCollide(PlayerCollisionDirection, GameObject*) = win 0x2ce550;
+	TodoReturn updateCollideBottom(float, GameObject*) = win 0x2ce6c0;
+	TodoReturn updateCollideLeft(float, GameObject*) = win 0x2ce7c0;
+	TodoReturn updateCollideRight(float, GameObject*) = win 0x2ce840;
+	TodoReturn updateCollideTop(float, GameObject*) = win 0x2ce740;
 	void updateDashAnimation() = win 0x2d0ea0;
 	void updateDashArt() = win 0x2d0530;
 	TodoReturn updateEffects(float);
 	TodoReturn updateGlowColor() = win 0x2d6610;
-	TodoReturn updateInternalActions(float);
+	TodoReturn updateInternalActions(float); // inlined on win
 	TodoReturn updateJump(float) = win 0x2c67b0;
 	TodoReturn updateJumpVariables();
 	TodoReturn updateLastGroundObject(GameObject*);
@@ -11144,7 +11283,17 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	virtual TodoReturn animationFinished(char const*);
 
 	cocos2d::CCNode* m_mainLayer;
-	PAD = win 0x44, android32 0x44;
+	
+	PAD = win 0x10, android32 0x10;
+	
+	// dash orb variables, set on `PlayerObject::startDashing`
+	double m_dashVar1;
+	double m_dashVar2;
+	double m_dashAngle;
+	double m_dashBeginTime;
+    
+	PAD = win 0x14, android32 0x14;
+
 	cocos2d::CCNode* m_unk4e4;
 	cocos2d::CCDictionary* m_unk4e8;
 	cocos2d::CCDictionary* m_unk4ec;
@@ -11163,7 +11312,7 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	cocos2d::CCSprite* m_unk56c;
 	PAD = win 0x4, android32 0x4;
 	GameObject* m_unk574;
-	GameObject* m_unk578;
+	GameObject* m_collidedSlope;
 	PAD = win 0x8, android32 0x8;
 	float unk_584;
 	int unk_588; // seems to always be 0, but when you respawn it's -1 until you move at least 1 block from the respawn place
@@ -11239,7 +11388,8 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	PAD = win 0x64, android32 0x64;
 	bool m_hasCustomGlowColor;
 	cocos2d::ccColor3B m_glowColor;
-	PAD = win 0x24, android32 0x1c;
+	PAD = win 0x1c, android32 0x14; // android pad is untested btw :3
+	double m_tempYVelocity;
 	double m_yVelocity;
 	bool m_isOnSlope;
 	bool m_wasOnSlope;
