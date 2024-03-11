@@ -11174,11 +11174,7 @@ class PlayerObject : GameObject, AnimatedSpriteDelegate {
 	TodoReturn spiderTestJumpInternal(bool);
 	TodoReturn spiderTestJumpX(bool);
 	TodoReturn spiderTestJumpY(bool);
-<<<<<<< Updated upstream
 	void startDashing(DashRingObject*) = win 0x2cfdb0;
-=======
-	TodoReturn startDashing(DashRingObject*) = win 0x2cfdb0;
->>>>>>> Stashed changes
 	TodoReturn stopBurstEffect();
 	TodoReturn stopDashing() = win 0x2d0940;
 	TodoReturn stopParticles();
